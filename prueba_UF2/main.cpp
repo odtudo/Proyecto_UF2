@@ -1,12 +1,10 @@
+//Oscar Diaz, Sebastian Escamilla y Dumas Maldonado
+
 #include <iostream>
-#include <cstdlib>
 #include <ctime>
 #define MAX_ESTUDIANTES 10
 
-
-
 using namespace std;
-
 
 class Usuario {
 
@@ -15,8 +13,6 @@ public:
     string nombre;
     string apellido;
     string rol;
-
-
 
     Usuario() {
 
@@ -38,7 +34,6 @@ public:
 
 class Documento {
 
-
     public:
 
     string nombreArchivo;
@@ -55,13 +50,9 @@ public:
   Mochila() {
 
       numeroDeDocumentos = 0;
-
   }
 
-
 };
-
-
 
 class Profesor {
 
@@ -144,6 +135,18 @@ int main() {
 
 void menuEstudiantes() {
 
+    int id;
+    printf("Escribe tu ID de estudiante: ");
+    cin >> id;
+
+    if(mochilas[id] == NULL){
+        printf("Estudiante no encontrado\n");
+        return;
+    }
+
+    Mochila* mochila = mochilas[id];
+
+
     int opcion =0;
     do {
 
@@ -151,13 +154,104 @@ void menuEstudiantes() {
         printf("1. Subir Documento\n");
         printf("2. Ver Documnetos\n");
         printf("3. Ver contenido de Documentos\n");
-        printf("4. Salir");
+        printf("4. Eliminar Documento\n");
+        printf("5. Salir\n");
         cin >> opcion;
 
 
-    }while (opcion != 4);
+        switch (opcion) {
+
+            case 1: {
+
+                if(mochila->numeroDeDocumentos >= 10){
+                    printf("Mochila llena\n");
+                    break;
+                }
+
+                Documento* doc = new Documento();
+
+                printf("Nombre del archivo: ");
+                cin >> doc->nombreArchivo;
+
+                printf("Contenido: ");
+                cin.ignore();
+                getline(cin, doc->contenido);
+
+                mochila->documento[mochila->numeroDeDocumentos] = doc;
+                mochila->numeroDeDocumentos++;
+
+                printf("Documento guardado\n");
+
+                break;
+            }
+            case 2: {
+
+                if(mochila->numeroDeDocumentos == 0){
+                    printf("No hay documentos\n");
+                    break;
+                }
+
+                for(int i=0;i<mochila->numeroDeDocumentos;i++){
+
+                    cout << i+1 << ". "
+                         << mochila->documento[i]->nombreArchivo
+                         << endl;
+                }
+
+                break;
+            }
+
+            case 3: {
+
+                int num;
+
+                printf("Numero de documento: ");
+                cin >> num;
+
+                if(num <= 0 || num > mochila->numeroDeDocumentos){
+                    printf("Documento no valido\n");
+                    break;
+                }
+
+                Documento* doc = mochila->documento[num-1];
+
+                cout << "Nombre: " << doc->nombreArchivo << endl;
+                cout << "Contenido: " << doc->contenido << endl;
+
+                break;
+
+            }
+
+            case 4: {
+
+                int num;
+
+                printf("Documento a eliminar: ");
+                cin >> num;
+
+                if(num <=0 || num > mochila->numeroDeDocumentos){
+                    printf("Documento no valido\n");
+                    break;
+                }
+
+                delete mochila->documento[num-1];
+
+                for(int i=num-1;i<mochila->numeroDeDocumentos-1;i++){
+
+                    mochila->documento[i] = mochila->documento[i+1];
+                }
+
+                mochila->numeroDeDocumentos--;
+
+                printf("Documento eliminado\n");
+
+                break;
+
+            }
+        }
 
 
+    }while (opcion != 5);
 };
 void menuProfesor() {
 
@@ -166,7 +260,7 @@ void menuProfesor() {
 
     Profesor* profesorAhora;
 
-    printf("== Menu de Profesor ==\n");
+    printf("\n== Menu de Profesor ==\n");
     printf("Escribe tu ID de profesor: ");
     cin >> ID;
 
@@ -278,9 +372,6 @@ void menuProfesor() {
 
         }
     }while (opcion != 4);
-
-
-
 }
 void menuAdministrador() {
 
@@ -367,15 +458,13 @@ void menuAdministrador() {
 
     }while (opcion != 4);
 
-
-
 }
 void calculadora() {
 
     int opcion = 0;
     do {
 
-        printf("== Menu Calculadora ==");
+        printf("\n== Menu Calculadora ==\n");
         printf("1. Suma\n");
         printf("2. Resta\n");
         printf("3. Multiplicacion\n");
@@ -461,7 +550,7 @@ void calculadora() {
 
                 printf("\n1. Sumar matrices\n");
                 printf("2. Restar matrices\n");
-                printf("3. Restar matrices\n");
+                printf("3. Multiplicar matrices\n");
                 cin >> op;
 
                 double** R;
@@ -494,11 +583,7 @@ void calculadora() {
         }
 
     }while (opcion != 6);
-
-
-
 }
-
 
 double** crearMatriz(int filas, int columnas) {
 
